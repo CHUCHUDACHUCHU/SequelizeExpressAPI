@@ -3,11 +3,11 @@ const router = express.Router();
 const jwt = require("jsonwebtoken")
 const { Op } = require("sequelize");
 const { Users } = require("../models");
-const authLoginUserMiddleware = require('../middlewares/authLoginUserMiddleware');
+const authUserMiddleware = require('../middlewares/authUserMiddleware');
 
 //회원가입
 
-router.post('/signup', authLoginUserMiddleware, async (req, res) => {
+router.post('/signup', authUserMiddleware, async (req, res) => {
 
     try {
 
@@ -49,7 +49,7 @@ router.post('/signup', authLoginUserMiddleware, async (req, res) => {
 
 //로그인
 
-router.post('/login', authLoginUserMiddleware, async (req, res) => {
+router.post('/login', authUserMiddleware, async (req, res) => {
 
     try {
         const users = await Users.findOne({
@@ -61,13 +61,18 @@ router.post('/login', authLoginUserMiddleware, async (req, res) => {
         if (!users || req.body.password !== users.password) {
             return res.status(400).json({ errorMessage: "닉네임 또는 패스워드를 확인해주세요." })
         }
+        const expires = new Date();
+        expires.setMinutes(expires.getMinutes() + 60);
+
         const token = jwt.sign(
             { userId: users.userId },
             process.env.SECRET_KEY,
-            { expiresIn: 60 }
+            { expiresIn: "1m" }
         );
 
-        res.cookie(process.env.COOKIE_NAME, `Bearer ${token}`);
+        res.cookie(process.env.COOKIE_NAME, `Bearer ${token}`, {
+            expires: expires,
+        });
         return res.status(200).json({ token });
 
     } catch (error) {

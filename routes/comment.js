@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const { Op } = require("sequelize");
-const authUserMiddleware = require("../middlewares/authUserMiddleware");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 // comment 객체의 형식 가져오기
-const { Users, Likes, Comments, Posts } = require("../models");
+const { Users, Comments, Posts } = require("../models");
 
 //댓글 생성
-router.post("/:postId", authUserMiddleware, async (req, res) => {
+router.post("/:postId", authMiddleware, async (req, res) => {
     try {
         const { postId } = req.params;
         const { comment } = req.body;
@@ -30,7 +30,7 @@ router.post("/:postId", authUserMiddleware, async (req, res) => {
 });
 
 //댓글 목록 조회
-router.get("/:postId", authUserMiddleware, async (req, res) => {
+router.get("/:postId", authMiddleware, async (req, res) => {
     try {
         const { postId } = req.params;
         const data = await Comments.findAll({
@@ -58,7 +58,7 @@ router.get("/:postId", authUserMiddleware, async (req, res) => {
 });
 
 //댓글 수정
-router.put('/:commentId', authUserMiddleware, async (req, res) => {
+router.put('/:commentId', authMiddleware, async (req, res) => {
 
     try {
         const { commentId } = req.params
@@ -94,7 +94,7 @@ router.put('/:commentId', authUserMiddleware, async (req, res) => {
 })
 
 //댓글 삭제
-router.delete("/:commentId", authUserMiddleware, async (req, res) => {
+router.delete("/:commentId", authMiddleware, async (req, res) => {
     try {
         const { user } = res.locals;
         const { commentId } = req.params;

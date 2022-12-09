@@ -1,31 +1,28 @@
-const jwt = require('jsonwebtoken');
-const { Users } = require('../models');
-require('dotenv').config();
+const { Users } = require("../models");
+const jwt = require("jsonwebtoken");
 
-// 유저 인증에 실패하더라도 에러를 반환하지 않는다.
-module.exports = async (req, res, next) => {
+// 로그인 되어 있는 유저일 경우 Error를 반환한다.
+module.exports = (req, res, next) => {
     try {
         const cookies = req.cookies[process.env.COOKIE_NAME];
-        if (!cookies) {
-            return res.status(403).send({
-                errorMessage: '로그인이 필요한 기능입니다.',
+        const [authType, authToken] = (cookies || '').split(" ");
+        if (authToken && authType === 'Bearer') {
+            const { userId } = jwt.verify(authToken, process.env.SECRET_KEY);
+            Users.findByPk(userId).then((user) => {
+                if (user) {
+                    console.log(user);
+                    res.status(401).send({ errorMessage: '이미 로그인이 되어있습니다.' });
+                }
             });
+            return;
         }
-
-        const [tokenType, tokenValue] = cookies.split(' ');
-        if (tokenType !== 'Bearer') {
-            return res.status(403).send({
-                errorMessage: '전달된 쿠키에서 오류가 발생하였습니다.',
-            });
-        }
-
-        const { userId } = jwt.verify(tokenValue, process.env.SECRET_KEY);
-        const user = await Users.findByPk(userId);
-
-        res.locals.user = user;
         next();
     } catch (error) {
-        res.locals.user = { userId: undefined };
-        next();
+        console.log(error.message);
+        if (error.message === 'jwt expired') {
+            next();
+        } else {
+            res.status(400).send({ errorMessage: "데이터의 형식이 올바르지 않습니다." })
+        }
     }
 };
