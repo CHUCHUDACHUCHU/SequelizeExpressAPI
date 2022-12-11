@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken")
 const { Op } = require("sequelize");
 const { Users } = require("../models");
-const authUserMiddleware = require('../middlewares/authUserMiddleware');
+const authUserMiddleware = require('../middlewares/authUserMiddleware.js');
 
 //회원가입
 

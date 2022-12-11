@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Op } = require("sequelize");
-const authMiddleware = require("../middlewares/authMiddleware");
+const authMiddleware = require("../middlewares/authMiddleware.js");
 
 // comment 객체의 형식 가져오기
 const { Users, Comments, Posts } = require("../models");
