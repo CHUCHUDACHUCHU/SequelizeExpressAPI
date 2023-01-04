@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Likes extends Model {
     /**
@@ -12,51 +10,54 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Users, {
-        foreignKey: 'userId'
+        foreignKey: 'userId',
       });
       this.belongsTo(models.Posts, {
-        foreignKey: 'postId'
+        foreignKey: 'postId',
       });
     }
   }
-  Likes.init({
-    LikeId: {
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: DataTypes.INTEGER
-    },
-    postId: {
-      allowNull: false,
-      references: {
-        model: "Posts",
-        key: "postId",
+  Likes.init(
+    {
+      LikeId: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
       },
-      onDelete: "cascade",
-      type: DataTypes.INTEGER
-    },
-    userId: {
-      allowNull: false,
-      references: {
-        model: "Users",
-        key: "userId",
+      postId: {
+        allowNull: false,
+        references: {
+          model: 'Posts',
+          key: 'postId',
+        },
+        onDelete: 'cascade',
+        type: DataTypes.INTEGER,
       },
-      onDelete: "cascade",
-      type: DataTypes.INTEGER
+      userId: {
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'userId',
+        },
+        onDelete: 'cascade',
+        type: DataTypes.INTEGER,
+      },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
     },
-    createdAt: {
-      allowNull: false,
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      allowNull: false,
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+    {
+      sequelize,
+      modelName: 'Likes',
     }
-  }, {
-    sequelize,
-    modelName: 'Likes',
-  });
+  );
   return Likes;
 };

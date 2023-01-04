@@ -7,44 +7,43 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.DataTypes.INTEGER
+        type: Sequelize.DataTypes.INTEGER,
       },
       postId: {
         type: Sequelize.DataTypes.INTEGER,
         references: {
           model: 'Posts',
-          key: 'postId'
+          key: 'postId',
         },
         onDelete: 'CASCADE',
-        allowNull: false
+        allowNull: false,
       },
       userId: {
         type: Sequelize.DataTypes.INTEGER,
         references: {
           model: 'Users',
-          key: 'userId'
+          key: 'userId',
         },
         onDelete: 'CASCADE',
-        allowNull: false
+        allowNull: false,
       },
       content: {
         type: Sequelize.DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DataTypes.DATE,
-        defaultValue: Sequelize.DataTypes.NOW
-
+        defaultValue: Sequelize.DataTypes.NOW,
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DataTypes.DATE,
-        defaultValue: Sequelize.DataTypes.NOW
-      }
+        defaultValue: Sequelize.DataTypes.NOW,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Comments');
-  }
+  },
 };
